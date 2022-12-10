@@ -1,23 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useUser } from "./context/user-context";
+import { useEffect } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 function App() {
+  const navigate = useNavigate();
+  const {
+    user: { isLoggedIn },
+    logout,
+  } = useUser();
+
+  useEffect(() => {
+    navigate(isLoggedIn ? "/" : "/login");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div>
+      <header>
+        <Link className="text-blue-500 cursor-pointer" to="/">
+          Home
+        </Link>
+        {isLoggedIn ? (
+          <>
+            <Link className="ml-4 text-blue-500 cursor-pointer" to="/about-us">
+              About Us
+            </Link>
+            <span
+              className="ml-4 text-blue-500 cursor-pointer"
+              onClick={logout}
+            >
+              Logout
+            </span>
+          </>
+        ) : (
+          <Link className="ml-4 text-blue-500 cursor-pointer" to="/login">
+            Login
+          </Link>
+        )}
       </header>
+      <main>
+        <Outlet />
+      </main>
     </div>
   );
 }
